@@ -1,5 +1,7 @@
 // import 'dart:html';
 
+// import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 import 'package:function_tree/function_tree.dart';
 
@@ -30,7 +32,7 @@ class CalculatorPage extends StatefulWidget {
 class _CalculatorPageState extends State<CalculatorPage> {
   String mathExpression = "";
   String result = "0";
-  bool isArrowOpen = false;
+  bool isBracketOpen = false;
   RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
 
   backSpace() {
@@ -49,12 +51,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
     setState(() {});
   }
 
-  addArrow() {
-    if (isArrowOpen) {
-      isArrowOpen = false;
+  addBracket() {
+    if (isBracketOpen) {
+      isBracketOpen = false;
       return addText(")");
     } else {
-      isArrowOpen = true;
+      isBracketOpen = true;
+      if (mathExpression.length>=1 && !mathExpression[mathExpression.length - 1]
+          .contains(RegExp(r'[%-+÷×.]'))) {
+        return addText("×(");
+      }
       return addText("(");
     }
   }
@@ -153,7 +159,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               text: "( )",
                               textColor: Color(0xFF4DC722),
                               flex: 1,
-                              onPressed: () => addArrow(),
+                              onPressed: () => addBracket(),
                             ),
                             CustomeButton(
                               text: "%",
