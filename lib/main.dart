@@ -61,7 +61,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   equal() {
     try {
-      result = mathExpression.interpret().toString().replaceAll(regex, "");
+      String tempMathExp = mathExpression.replaceAll("÷", "/");
+      tempMathExp = tempMathExp.replaceAll("×", "*");
+      result = tempMathExp.interpret().toString().replaceAll(regex, "");
       mathExpression = result;
     } catch (e) {
       result = "Invalid";
@@ -163,7 +165,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               text: "÷",
                               textColor: Color(0xFF4DC722),
                               flex: 1,
-                              onPressed: () => addText("/"),
+                              onPressed: () => addText("÷"),
                             ),
                           ],
                         ),
@@ -191,7 +193,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               text: "×",
                               textColor: Color(0xFF4DC722),
                               flex: 1,
-                              onPressed: () => addText("*"),
+                              onPressed: () => addText("×"),
                             ),
                           ],
                         ),
