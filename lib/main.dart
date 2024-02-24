@@ -47,18 +47,29 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   void addText(String text) {
+    if (isLengthLimitReached()) {
+      return;
+    }
     mathExpression = mathExpression + text;
     setState(() {});
   }
 
+  bool isLengthLimitReached() {
+    return mathExpression.length > 25;
+  }
+
   addBracket() {
+    if (isLengthLimitReached()) {
+      return;
+    }
     if (isBracketOpen) {
       isBracketOpen = false;
       return addText(")");
     } else {
       isBracketOpen = true;
-      if (mathExpression.length>=1 && !mathExpression[mathExpression.length - 1]
-          .contains(RegExp(r'[%-+÷×.]'))) {
+      if (mathExpression.length >= 1 &&
+          !mathExpression[mathExpression.length - 1]
+              .contains(RegExp(r'[%-+÷×.]'))) {
         return addText("×(");
       }
       return addText("(");
@@ -66,13 +77,20 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   equal() {
+    if (!mathExpression.contains(RegExp(r'[%-+÷×]'))) {
+      return;
+    }
     try {
       String tempMathExp = mathExpression.replaceAll("÷", "/");
       tempMathExp = tempMathExp.replaceAll("×", "*");
       result = tempMathExp.interpret().toString().replaceAll(regex, "");
+      // if (result.length > 10) {
+      //   result = result.substring(0, 10);
+      // }
       mathExpression = result;
     } catch (e) {
       result = "Invalid";
+      print(e);
     }
 
     setState(() {});
@@ -91,18 +109,19 @@ class _CalculatorPageState extends State<CalculatorPage> {
       ),
       body: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         color: Colors.black,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: 60,
-                margin: EdgeInsets.only(top: 20, bottom: 40),
+                height: 115,
+                // color: Colors.red,
+                margin: EdgeInsets.only(top: 0, bottom: 40),
                 alignment: Alignment.centerRight,
                 child: Text(
                   result,
-                  style: TextStyle(fontSize: 44, color: Colors.white),
+                  style: TextStyle(fontSize: 38, color: Colors.white),
                 ),
               ),
               Column(
@@ -113,11 +132,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       children: [
                         Column(
                           children: [
-                            Container(
-                              child: Text(mathExpression,
-                                  style: TextStyle(
-                                      fontSize: 36, color: Colors.white)),
-                              // color: Colors.yellow,
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                width: 280,
+                                child: Text(mathExpression,
+                                    style: TextStyle(
+                                        fontSize: 36, color: Colors.white)),
+                                // color: Colors.yellow,
+                              ),
                             )
                           ],
                         ),
